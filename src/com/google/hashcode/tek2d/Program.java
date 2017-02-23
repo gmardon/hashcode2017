@@ -82,7 +82,7 @@ public class Program {
             while (!remain.isEmpty()) {
                 int id = (int) Math.random() * remain.size();
                 server.getVideos().add(remain.get(id));
-                remain = videosBySize.stream().filter(v -> v.getSize() < server.getMaxSize() - server.getActualSize()).collect(Collectors.toCollection(LinkedList::new));
+                //remain = videosBySize.stream().filter(v -> v.getSize() < server.getMaxSize() - server.getActualSize()).collect(Collectors.toCollection(LinkedList::new));
             }
         }
     }
