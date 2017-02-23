@@ -4,6 +4,9 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.stream.Collectors;
+
+import static com.google.hashcode.tek2d.utils.Utils.distinctByKey;
 
 /**
  * Created by gmardon on 23/02/2017.
@@ -30,8 +33,11 @@ public class CacheServer {
     public List<Video> getVideos() {
         LinkedList<Video> videos = new LinkedList<>();
         for(CacheLink link : links) {
-            link.getEndpoint().getRequests().forEach(r -> videos.add(r.getVideo()));
+            for (RequestGroup group : link.getEndpoint().getRequests()) {
+                videos.add(group.getVideo());
+            }
         }
+        videos = videos.stream().filter(distinctByKey(v -> v.getId())).collect(Collectors.toCollection(LinkedList::new));
         videos.sort(Comparator.comparingInt(Video::getSize));
         return videos;
     }
