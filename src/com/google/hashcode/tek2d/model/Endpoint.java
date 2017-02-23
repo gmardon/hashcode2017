@@ -9,7 +9,7 @@ import java.util.List;
 public class Endpoint {
     private int id;
     private int latency;
-    private List<Request> requests;
+    private List<RequestGroup> requests;
     private List<CacheLink> links;
 
     public Endpoint(int id, int latency) {
@@ -24,5 +24,21 @@ public class Endpoint {
 
     public void setLinks(List<CacheLink> links) {
         this.links = links;
+    }
+
+    public List<RequestGroup> getRequests() {
+        return requests;
+    }
+
+    public void setRequests(List<RequestGroup> requests) {
+        this.requests = requests;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 }

@@ -1,9 +1,6 @@
 package com.google.hashcode.tek2d;
 
-import com.google.hashcode.tek2d.model.CacheLink;
-import com.google.hashcode.tek2d.model.CacheServer;
-import com.google.hashcode.tek2d.model.Endpoint;
-import com.google.hashcode.tek2d.model.Video;
+import com.google.hashcode.tek2d.model.*;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -24,6 +21,7 @@ public class Parser {
         File file = new File(filePath);
         List<Video> videos = new LinkedList<>();
         List<CacheServer> cacheServers = new LinkedList<>();
+        List<Endpoint> endpoints = new LinkedList<>();
 
         Scanner scanner = new Scanner(file);
 
@@ -51,17 +49,28 @@ public class Parser {
             for (int y = 0; y < cachesCount; y++) {
                 int id = scanner.nextInt();
                 int latency = scanner.nextInt();
-                try {
-                    if (!cacheServers.stream().filter(s -> s.getId() == id).findFirst().isPresent()) {
-                        cacheServers.add(new CacheServer(id, cacheSize));
-                    }
-                } catch (IndexOutOfBoundsException ex) {
+                if (!cacheServers.stream().filter(s -> s.getId() == id).findFirst().isPresent()) {
                     cacheServers.add(new CacheServer(id, cacheSize));
                 }
                 CacheLink link = new CacheLink(latency, cacheServers.stream().filter(s -> s.getId() == id).findFirst().get());
                 cacheLinks.add(y, link);
             }
             endpoint.setLinks(cacheLinks);
+            endpoints.add(endpoint);
+        }
+
+        for (int i = 0; i < requestsCount; i++) {
+            int videoId = scanner.nextInt();
+            int endpointId = scanner.nextInt();
+            int requests = scanner.nextInt();
+
+            //if (endpoints.stream().filter(s -> s.getId() == endpointId).findFirst().isPresent()) {
+                Endpoint endpoint = endpoints.stream().filter(s -> s.getId() == endpointId).findFirst().get();
+               // if (videos.stream().filter(s -> s.getId() == videoId).findFirst().isPresent()) {
+                    Video video = videos.stream().filter(s -> s.getId() == videoId).findFirst().get();
+                    endpoint.getRequests().add(new RequestGroup(requests, video));
+               // }
+            //}
         }
     }
 }
