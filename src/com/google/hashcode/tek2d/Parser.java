@@ -64,13 +64,9 @@ public class Parser {
             int endpointId = scanner.nextInt();
             int requests = scanner.nextInt();
 
-            //if (endpoints.stream().filter(s -> s.getId() == endpointId).findFirst().isPresent()) {
-                Endpoint endpoint = endpoints.stream().filter(s -> s.getId() == endpointId).findFirst().get();
-               // if (videos.stream().filter(s -> s.getId() == videoId).findFirst().isPresent()) {
-                    Video video = videos.stream().filter(s -> s.getId() == videoId).findFirst().get();
-                    endpoint.getRequests().add(new RequestGroup(requests, video));
-               // }
-            //}
+            Endpoint endpoint = endpoints.stream().filter(s -> s.getId() == endpointId).findFirst().get();
+            Video video = videos.stream().filter(s -> s.getId() == videoId).findFirst().get();
+            endpoint.getRequests().add(new RequestGroup(requests, video));
         }
     }
 }
