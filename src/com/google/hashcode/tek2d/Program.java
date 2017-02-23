@@ -2,9 +2,9 @@ package com.google.hashcode.tek2d;
 
 import com.google.hashcode.tek2d.model.*;
 import sun.awt.image.ImageWatched;
+import sun.misc.Cache;
 
-import java.io.File;
-import java.io.FileNotFoundException;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
@@ -22,7 +22,7 @@ public class Program {
     public void process(String filePath) throws FileNotFoundException {
         File file = new File(filePath);
         List<Video> videos = new LinkedList<>();
-        List<CacheServer> cacheServers = new LinkedList<>();
+        LinkedList<CacheServer> cacheServers = new LinkedList<>();
         List<Endpoint> endpoints = new LinkedList<>();
 
         Scanner scanner = new Scanner(file);
@@ -80,10 +80,33 @@ public class Program {
 
             LinkedList<Video> remain = videosBySize.stream().filter(v -> v.getSize() < server.getMaxSize() - server.getActualSize()).collect(Collectors.toCollection(LinkedList::new));
             while (!remain.isEmpty()) {
-                int id = (int) Math.random() * remain.size();
+                int id = (int) (Math.random() * remain.size());
+                videosBySize.remove(id);
                 server.getVideos().add(remain.get(id));
-                //remain = videosBySize.stream().filter(v -> v.getSize() < server.getMaxSize() - server.getActualSize()).collect(Collectors.toCollection(LinkedList::new));
+                remain = videosBySize.stream().filter(v -> v.getSize() < server.getMaxSize() - server.getActualSize()).collect(Collectors.toCollection(LinkedList::new));
             }
+        }
+
+        dump(filePath + ".out", cacheServers);
+    }
+
+    public void dump(String path, LinkedList<CacheServer> servers) {
+        Writer writer = null;
+
+        try {
+            writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(path), "utf-8"));
+            writer.write(servers.size() + "\n");
+            for (CacheServer server : servers) {
+                writer.write(server.getId() + " ");
+                for (Video video : server.getVideos()) {
+                    writer.write(video.getId() + " ");
+                }
+                writer.write("\n");
+            }
+        } catch (IOException ex) {
+            // report
+        } finally {
+            try {writer.close();} catch (Exception ex) {/*ignore*/}
         }
     }
 }
