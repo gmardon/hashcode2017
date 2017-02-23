@@ -19,4 +19,12 @@ public class Video {
     public void setId(int id) {
         this.id = id;
     }
+
+    public int getSize() {
+        return size;
+    }
+
+    public void setSize(int size) {
+        this.size = size;
+    }
 }

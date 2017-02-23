@@ -52,7 +52,8 @@ public class Parser {
                 if (!cacheServers.stream().filter(s -> s.getId() == id).findFirst().isPresent()) {
                     cacheServers.add(new CacheServer(id, cacheSize));
                 }
-                CacheLink link = new CacheLink(latency, cacheServers.stream().filter(s -> s.getId() == id).findFirst().get());
+                CacheLink link = new CacheLink(latency, cacheServers.stream().filter(s -> s.getId() == id).findFirst().get(), endpoint);
+                cacheServers.stream().filter(s -> s.getId() == id).findFirst().get().getLinks().add(link);
                 cacheLinks.add(y, link);
             }
             endpoint.setLinks(cacheLinks);
