@@ -6,4 +6,9 @@ package com.google.hashcode.tek2d.model;
 public class Video {
     private int id;
     private int size;
+
+    public Video(int id, int size) {
+        this.id = id;
+        this.size = size;
+    }
 }
