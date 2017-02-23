@@ -30,7 +30,7 @@ public class CacheServer {
         this.id = id;
     }
 
-    public List<Video> getVideos() {
+    public List<Video> getVideosBySize() {
         LinkedList<Video> videos = new LinkedList<>();
         for(CacheLink link : links) {
             for (RequestGroup group : link.getEndpoint().getRequests()) {
