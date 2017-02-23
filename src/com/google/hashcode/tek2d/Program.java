@@ -1,6 +1,7 @@
 package com.google.hashcode.tek2d;
 
 import com.google.hashcode.tek2d.model.*;
+import sun.awt.image.ImageWatched;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -8,6 +9,7 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Scanner;
+import java.util.stream.Collectors;
 
 /**
  * Created by gmardon on 23/02/2017.
@@ -68,6 +70,20 @@ public class Program {
             Endpoint endpoint = endpoints.stream().filter(s -> s.getId() == endpointId).findFirst().get();
             Video video = videos.stream().filter(s -> s.getId() == videoId).findFirst().get();
             endpoint.getRequests().add(new RequestGroup(requests, video));
+        }
+
+        // end of parsing
+
+        for (CacheServer server : cacheServers) {
+            System.out.println("processing server " + server.getId());
+            LinkedList<Video> videosBySize = server.getVideosBySize();
+
+            LinkedList<Video> remain = videosBySize.stream().filter(v -> v.getSize() < server.getMaxSize() - server.getActualSize()).collect(Collectors.toCollection(LinkedList::new));
+            while (!remain.isEmpty()) {
+                int id = (int) Math.random() * remain.size();
+                server.getVideos().add(remain.get(id));
+                remain = videosBySize.stream().filter(v -> v.getSize() < server.getMaxSize() - server.getActualSize()).collect(Collectors.toCollection(LinkedList::new));
+            }
         }
     }
 }

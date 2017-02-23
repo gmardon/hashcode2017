@@ -15,11 +15,13 @@ public class CacheServer {
     private int id;
     private int maxSize;
     private List<CacheLink> links;
+    private List<Video> videos;
 
     public CacheServer(int id, int maxSize) {
         this.id = id;
         this.maxSize = maxSize;
-        this.links = new LinkedList<CacheLink>();
+        this.links = new LinkedList<>();
+        this.videos = new LinkedList<>();
     }
 
     public int getId() {
@@ -30,7 +32,7 @@ public class CacheServer {
         this.id = id;
     }
 
-    public List<Video> getVideosBySize() {
+    public LinkedList<Video> getVideosBySize() {
         LinkedList<Video> videos = new LinkedList<>();
         for(CacheLink link : links) {
             for (RequestGroup group : link.getEndpoint().getRequests()) {
@@ -48,5 +50,25 @@ public class CacheServer {
 
     public void setLinks(List<CacheLink> links) {
         this.links = links;
+    }
+
+    public List<Video> getVideos() {
+        return videos;
+    }
+
+    public void setVideos(List<Video> videos) {
+        this.videos = videos;
+    }
+
+    public int getActualSize() {
+        return this.videos.stream().mapToInt(Video::getSize).sum();
+    }
+
+    public int getMaxSize() {
+        return maxSize;
+    }
+
+    public void setMaxSize(int maxSize) {
+        this.maxSize = maxSize;
     }
 }
