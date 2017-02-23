@@ -1,8 +1,6 @@
 package com.google.hashcode.tek2d;
 
 import com.google.hashcode.tek2d.model.*;
-import sun.awt.image.ImageWatched;
-import sun.misc.Cache;
 
 import java.io.*;
 import java.util.ArrayList;
@@ -16,7 +14,9 @@ import java.util.stream.Collectors;
  */
 public class Program {
     public static void main(String[] args) throws FileNotFoundException {
-        new Program().process("input/kittens.in");
+        while(true)
+            new Program().process("input/trending_today.in");
+
     }
 
     public void process(String filePath) throws FileNotFoundException {
@@ -75,7 +75,6 @@ public class Program {
         // end of parsing
 
         for (CacheServer server : cacheServers) {
-            System.out.println("processing server " + server.getId());
             LinkedList<Video> videosBySize = server.getVideosBySize();
 
             LinkedList<Video> remain = videosBySize.stream().filter(v -> v.getSize() < server.getMaxSize() - server.getActualSize()).collect(Collectors.toCollection(LinkedList::new));
@@ -86,8 +85,28 @@ public class Program {
                 remain = videosBySize.stream().filter(v -> v.getSize() < server.getMaxSize() - server.getActualSize()).collect(Collectors.toCollection(LinkedList::new));
             }
         }
+        long total = 0;
+        for (Endpoint endpoint : endpoints) {
+            for (RequestGroup group : endpoint.getRequests()) {
+                CacheLink best = null;
+                for (CacheLink link : endpoint.getLinks()) {
+                    if (link.getCache().getVideos().contains(group.getVideo())) {
+                        if (best == null)
+                            best = link;
+                        if (link.getLatency() < best.getLatency())
+                            best = link;
+                    }
+                }
+                if (best != null)
+                    total += (endpoint.getLatency() - best.getLatency()) * group.getSize();
+            }
+        }
+      //  if (total > best_total)
+            dump(filePath + ".out", cacheServers);
 
-        dump(filePath + ".out", cacheServers);
+      //  System.out.println("total: " + total);
+
+      //  return (total > best_total) ? total : best_total;
     }
 
     public void dump(String path, LinkedList<CacheServer> servers) {
@@ -106,7 +125,9 @@ public class Program {
         } catch (IOException ex) {
             // report
         } finally {
-            try {writer.close();} catch (Exception ex) {/*ignore*/}
+            try {
+                writer.close();
+            } catch (Exception ex) {/*ignore*/}
         }
     }
 }

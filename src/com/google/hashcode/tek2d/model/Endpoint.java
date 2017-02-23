@@ -41,4 +41,12 @@ public class Endpoint {
     public void setId(int id) {
         this.id = id;
     }
+
+    public int getLatency() {
+        return latency;
+    }
+
+    public void setLatency(int latency) {
+        this.latency = latency;
+    }
 }
